@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "mukesh18s/node-hello-world" // Replace with your Docker Hub repo
+        SSH_PASSWORD = "ubuntu"
+        REMOTE_SERVER = "ubuntu@16.170.226.199"
     }
 
     stages {
@@ -34,20 +36,21 @@ pipeline {
             }
         }
 
-        stage('Deploy to EC2') {
-    steps {
-        sshagent(['jenkins_ssh']) {
-            sh """
-            ssh -o StrictHostKeyChecking=no ubuntu@51.20.184.205 << EOF
-            docker pull mukesh18s/node-hello-world
-            docker stop node-hello || true
-            docker rm node-hello || true
-            docker run -d --name node-hello -p 80:3000 mukesh18s/node-hello-world
-            EOF
-            """
+       stage('Deploy to EC2') {
+            steps {
+                script {
+                    // Using sshpass for password-based SSH login
+                    sh """
+                        sshpass -p '${SSH_PASSWORD}' ssh -o StrictHostKeyChecking=no ${REMOTE_SERVER} << EOF
+                        docker pull $DOCKER_IMAGE
+                        docker stop node-hello || true
+                        docker rm node-hello || true
+                        docker run -d --name node-hello -p 80:3000 $DOCKER_IMAGE
+                        EOF
+                    """
+                }
+            }
         }
-    }
-}
 
     }
 
