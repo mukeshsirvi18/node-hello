@@ -35,19 +35,20 @@ pipeline {
         }
 
         stage('Deploy to EC2') {
-            steps {
-                script {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no ec2-user@51.20.184.205 << EOF
-                    docker pull $DOCKER_IMAGE
-                    docker stop node-hello || true
-                    docker rm node-hello || true
-                    docker run -d --name node-hello -p 80:3000 $DOCKER_IMAGE
-                    EOF
-                    """
-                }
-            }
+    steps {
+        sshagent(['ssh_key']) {
+            sh """
+            ssh -o StrictHostKeyChecking=no ec2-user@51.20.184.205 << EOF
+            docker pull mukesh18s/node-hello-world
+            docker stop node-hello || true
+            docker rm node-hello || true
+            docker run -d --name node-hello -p 80:3000 mukesh18s/node-hello-world
+            EOF
+            """
         }
+    }
+}
+
     }
 
     post {
