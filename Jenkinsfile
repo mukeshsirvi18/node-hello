@@ -38,26 +38,27 @@ pipeline {
         }
 
        stage('Deploy to EC2') {
-    steps {
-        withCredentials([usernamePassword(credentialsId: 'mukesh18s', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-            sshagent(['jenkins_ssh']) {
-                sh """
-                ssh -o StrictHostKeyChecking=no root@16.170.226.199 << EOF
-                # Login to Docker on EC2 using Jenkins stored credentials
-                echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
-                # Pull Docker image from Docker Hub
-                docker pull $DOCKER_IMAGE
-                # Stop and remove the container if it exists
-                docker stop node-hello || true
-                docker rm node-hello || true
-                # Run the container
-                docker run -d --name node-hello -p 80:3000 $DOCKER_IMAGE
-                EOF
-                """
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'mukesh18s', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    script {
+                        // Deploy to EC2 using sshpass with stored password credentials
+                        sh """
+                        sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $REMOTE_SERVER << EOF
+                        # Login to Docker on EC2 using Jenkins stored credentials
+                        echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
+                        # Pull Docker image from Docker Hub
+                        docker pull $DOCKER_IMAGE
+                        # Stop and remove the container if it exists
+                        docker stop node-hello || true
+                        docker rm node-hello || true
+                        # Run the container
+                        docker run -d --name node-hello -p 80:3000 $DOCKER_IMAGE
+                        EOF
+                        """
+                    }
+                }
             }
         }
-    }
-}
 
 
     }
