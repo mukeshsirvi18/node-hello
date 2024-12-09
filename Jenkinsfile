@@ -38,7 +38,7 @@ pipeline {
     steps {
         sshagent(['ssh_key']) {
             sh """
-            ssh -o StrictHostKeyChecking=no ec2-user@51.20.184.205 << EOF
+            ssh -o StrictHostKeyChecking=no ubuntu@51.20.184.205 << EOF
             docker pull mukesh18s/node-hello-world
             docker stop node-hello || true
             docker rm node-hello || true
