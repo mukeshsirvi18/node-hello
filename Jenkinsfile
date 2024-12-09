@@ -37,13 +37,13 @@ pipeline {
             }
         }
 
-       stage('Deploy to EC2') {
+      stage('Deploy to EC2') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'mukesh18s', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     script {
                         // Deploy to EC2 using sshpass with stored password credentials
                         sh """
-                        sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $REMOTE_SERVER << EOF
+                        sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no $REMOTE_SERVER <<'EOF'
                         # Login to Docker on EC2 using Jenkins stored credentials
                         echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
                         # Pull Docker image from Docker Hub
