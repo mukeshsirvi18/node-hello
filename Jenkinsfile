@@ -42,7 +42,7 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'mukesh18s', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
             sshagent(['jenkins_ssh']) {
                 sh """
-                ssh -o StrictHostKeyChecking=no ubuntu@51.20.184.205 << EOF
+                ssh -o StrictHostKeyChecking=no root@16.170.226.199 << EOF
                 # Login to Docker on EC2 using Jenkins stored credentials
                 echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
                 # Pull Docker image from Docker Hub
