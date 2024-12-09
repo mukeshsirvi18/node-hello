@@ -10,10 +10,17 @@ pipeline {
 
     stages {
         stage('Clone Repository') {
-            steps {
+    steps {
+        script {
+            if (!fileExists('node-hello')) {
                 git branch: 'master', url: 'https://github.com/mukeshsirvi18/node-hello.git'
+            } else {
+                echo 'Repository already cloned. Skipping clone.'
             }
         }
+    }
+}
+
 
         stage('Build Docker Image') {
             steps {
