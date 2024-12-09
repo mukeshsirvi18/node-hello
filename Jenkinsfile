@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "mukesh18s/node-hello-world" // Replace with your Docker Hub repo
         SSH_PASSWORD = "ubuntu"
-        REMOTE_SERVER = "ubuntu@16.170.226.199"
+        REMOTE_SERVER = "root@16.170.226.199"
     }
 
     stages {
