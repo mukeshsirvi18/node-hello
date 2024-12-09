@@ -36,7 +36,7 @@ pipeline {
 
         stage('Deploy to EC2') {
     steps {
-        sshagent(['ssh_key']) {
+        sshagent(['jenkins_ssh']) {
             sh """
             ssh -o StrictHostKeyChecking=no ubuntu@51.20.184.205 << EOF
             docker pull mukesh18s/node-hello-world
